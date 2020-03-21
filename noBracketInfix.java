@@ -10,14 +10,14 @@ class noBracketInfix {
 	String infix="";
 	boolean onlyDigit=true;
 	private Stack stack;		// 연산자 잠깐 담아놓는 스택
-	// private Stack infixStack;	// 후위표기법으로 담아놓는 스택
+	private Stack infixStack;	// 후위표기법으로 담아놓는 스택
 	
 	// 생성자를 만들어 놓았음. input: 수식 입력.
 	public noBracketInfix(String input) {
 		super();
 		inputToInfix=input;
 		stack=new Stack<>();
-		// infixStack=new Stack<>();
+		infixStack=new Stack<>();
 	}
 	
 	// 후위표기법으로 변환한 것을 return하는 메소드.
@@ -42,9 +42,28 @@ class noBracketInfix {
 			// 숫자이면 바로 후위표기 infix로 넣어주고
 			
 			if(isNumber(token)) {
-				toInfix+=token;	// 한자리면 그냥 이렇게 처리하면 됨.
+				// toInfix+=token;	// 한자리면 그냥 이렇게 처리하면 됨.
 				
-				
+				// ++i에서 index초과하는 에러 발생
+				// catch문으로 해결
+				// 두 자리 이상이면 infixStack 이용
+				// 아직 제대로 계산안됨.
+				try {
+					while(isNumber(inputToInfix.charAt(++i))) {
+						k++;
+						onlyDigit=false;
+					}
+					for(int j=0;j<=k;j++)
+						i--;
+						
+					num+=(token-'0')*Math.pow(10, k);
+					if(k>0) 
+						k--;
+				} catch(IndexOutOfBoundsException e) {
+					--i;
+					num+=(token-'0')*Math.pow(10, k);
+				}
+				toInfix+=num;
 			}
 			// 연산자이면 스택 계산. 단, 괄호도 없고 +-뿐이니 바로 pop해주고 token 넣자.
 			else {
